@@ -3020,20 +3020,12 @@ mod.add_unit_list = function(unit_list, prioritized)
     if not entry then
       out("entry is nil! Something is weird in the calling file")
     else
-      local unit_key = entry[1] 
+      local unit_key = entry[1]
       if mod.setup.entries[unit_key] then
         out("\tUnit Key: ["..unit_key.."] existing entry overwritten by prioritized list.")
         if prioritized then
-          local existing_entry = mod.setup.entries[unit_key]
-          local existing_tags = existing_entry[2]
-          local new_tags = entry[2]
-          if existing_tags and new_tags then
-            mod.setup.entries[unit_key][2] = existing_tags .. ",rare"
-          elseif new_tags then
-            mod.setup.entries[unit_key][2] = new_tags
-          end
-        else
-          out("\tUnit Key: ["..unit_key.."] is being skipped because it already has an entry.")
+          mod.setup.entries[unit_key][2] = "special,rare"
+          mod.setup.entries[unit_key][3] = math.max(entry[3], mod.setup.entries[unit_key][3])
         end
       else
         mod.setup.entries[unit_key] = entry

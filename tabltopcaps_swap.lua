@@ -3023,12 +3023,15 @@ mod.add_unit_list = function(unit_list, prioritized)
       local unit_key = entry[1] 
       if mod.setup.entries[unit_key] then
         out("\tUnit Key: ["..unit_key.."] existing entry overwritten by prioritized list.")
-        if mod.setup.entries[unit_key][2] == "special" then -- Vérifier si l'unité est déjà enregistrée en tant qu'unité spéciale
-          mod.setup.entries[unit_key][2] = {"special", "rare"} -- Ajouter les deux tags
-        elseif mod.setup.entries[unit_key][2] == "rare" then -- Vérifier si l'unité est déjà enregistrée en tant qu'unité rare
-          mod.setup.entries[unit_key][2] = {"special", "rare"} -- Ajouter les deux tags
-        elseif prioritized then -- Si l'unité n'est pas encore enregistrée, ajouter l'entrée normalement
-          mod.setup.entries[unit_key] = entry
+        if prioritized then
+          local existing_entry = mod.setup.entries[unit_key]
+          local existing_tags = existing_entry[2]
+          local new_tags = entry[2]
+          if existing_tags and new_tags then
+            mod.setup.entries[unit_key][2] = existing_tags .. ",rare"
+          elseif new_tags then
+            mod.setup.entries[unit_key][2] = new_tags
+          end
         else
           out("\tUnit Key: ["..unit_key.."] is being skipped because it already has an entry.")
         end
